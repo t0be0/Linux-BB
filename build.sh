@@ -1,7 +1,7 @@
 #!/bin/bash
 
 KERNEL_VERSION=5.15.64
-BUSYBOX_VERSION=1.35.0
+BUSYBOX_VERSION=1.36.1
 
 # fakeroot build-essential ncurses-dev xz-utils libssl-dev/openssl bc flex libelf-dev bison
 
@@ -44,7 +44,14 @@ cd source
         rm -f busybox-$BUSYBOX_VERSION.tar
     
     fi
-    
+
+    #KILO_TEXT_EDITOR
+    if [ ! -d kilo-editor ];
+    then
+	git clone https://github.com/51ddhesh/kilo-editor.git
+    fi    
+
+
     echo "[+] Setting up"
     echo "--------------"
     
@@ -66,12 +73,20 @@ cd source
         
         make defconfig || _die "defconfig failed for busybox ('make defconfig' inside `pwd`), Exitting..."
         sed "s/^.*CONFIG_STATIC[^_]*$/CONFIG_STATIC=y/g" -i .config
-        make -j`nproc` || _die "Error while compiling Busybox ('make -j`nproc`' inside `pwd`), Exitting..."
+	sed "s/^CONFIG_TC=y$/CONFIG_TC=n/" -i .config
+	make -j`nproc` || _die "Error while compiling Busybox ('make -j`nproc`' inside `pwd`), Exitting..."
     fi
     cd ../
     
+    #KILO_EDITOR
+    cd kilo-editor
+    if [ ! -f kilo ];
+    then
+	gcc kilo.c -o kilo -static
+    fi
+    cd ../
 cd ../
-
+pwd
 rm -rf initrd
 mkdir -p initrd
 cd initrd
@@ -83,8 +98,10 @@ cd initrd
         do
             ln -s busybox ./$binary
         done
+	cp ../../source/kilo-editor/kilo .
         ### If u wanna add more binaries (copy-paste ones) (definitely not recommended)
-        ### cp /directory/to/binary .
+	### We are inside ./initrd/bin/ at this point.
+        ### example : cp ../../source/tool/binary .
     cd ../
     cd sbin/
     
