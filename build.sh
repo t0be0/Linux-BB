@@ -48,7 +48,7 @@ cd source
     #KILO_TEXT_EDITOR
     if [ ! -d kilo-editor ];
     then
-	git clone https://github.com/51ddhesh/kilo-editor.git
+		git clone https://github.com/51ddhesh/kilo-editor.git
     fi    
 
 
@@ -73,8 +73,8 @@ cd source
         
         make defconfig || _die "defconfig failed for busybox ('make defconfig' inside `pwd`), Exitting..."
         sed "s/^.*CONFIG_STATIC[^_]*$/CONFIG_STATIC=y/g" -i .config
-	sed "s/^CONFIG_TC=y$/CONFIG_TC=n/" -i .config
-	make -j`nproc` || _die "Error while compiling Busybox ('make -j`nproc`' inside `pwd`), Exitting..."
+		sed "s/^CONFIG_TC=y$/CONFIG_TC=n/" -i .config
+		make -j`nproc` || _die "Error while compiling Busybox ('make -j`nproc`' inside `pwd`), Exitting..."
     fi
     cd ../
     
@@ -82,7 +82,7 @@ cd source
     cd kilo-editor
     if [ ! -f kilo ];
     then
-	gcc kilo.c -o kilo -static
+		gcc kilo.c -o kilo -static
     fi
     cd ../
 cd ../
@@ -98,9 +98,9 @@ cd initrd
         do
             ln -s busybox ./$binary
         done
-	cp ../../source/kilo-editor/kilo .
+		cp ../../source/kilo-editor/kilo .
         ### If u wanna add more binaries (copy-paste ones) (definitely not recommended)
-	### We are inside ./initrd/bin/ at this point.
+		### We are inside ./initrd/bin/ at this point.
         ### example : cp ../../source/tool/binary .
     cd ../
     cd sbin/
